@@ -36,37 +36,37 @@ class TopicBox:
             self.ui_config["font"]["size"]
         )
 
-        # 1列分の要素 択の数だけつくる
-        self.line_frame = ttk.Frame(self.root)
-        self.line_frame.grid(row=0)
-        self.line_dicts = []
+        self.choice_dicts = []
         for i in range(self.box_config["topic_num"]):
+            choice_frame = ttk.Frame(self.root, borderwidth=1, relief=tk.GROOVE)
+            choice_frame.pack(ipadx=5, ipady=5, expand=1, side=tk.TOP)
+
             line_d = {}
-            tk.Label(self.line_frame, text=f"No.{i+1}:", font=font)\
-                .grid(row=i, column=0)
+            tk.Label(choice_frame, text=f"No.{i+1}:", font=font)\
+                .pack(expand=1, side=tk.LEFT)
 
             line_d["topic"] = tk.StringVar()
-            tk.Label(self.line_frame, textvariable=line_d["topic"], font=font, width=15)\
-                .grid(row=i, column=1)
+            tk.Label(choice_frame, textvariable=line_d["topic"], font=font, width=22)\
+                .pack(expand=1, side=tk.LEFT)
 
             line_d["votes_n"] = tk.StringVar()
-            tk.Label(self.line_frame, textvariable=line_d["votes_n"], font=font, width=4)\
-                .grid(row=i, column=2)
+            tk.Label(choice_frame, textvariable=line_d["votes_n"], font=font, width=5)\
+                .pack(expand=1, side=tk.LEFT)
 
             line_d["is_check"] = tk.BooleanVar()
-            tk.Checkbutton(self.line_frame, variable=line_d["is_check"])\
-                .grid(row=i, column=3)
+            tk.Checkbutton(choice_frame, variable=line_d["is_check"])\
+                .pack(expand=1, side=tk.LEFT)
 
-            self.line_dicts.append(line_d)
+            self.choice_dicts.append(line_d)
 
         # 1番下の部分
         self.bottom = {}
         self.bottom["frame"] = ttk.Frame(self.root)
-        self.bottom["frame"].grid(row=1)
-        self.bottom["all_votes_n"] = tk.Label(self.bottom["frame"], font=font)
-        self.bottom["all_votes_n"].grid(row=0, column=0)
-        self.bottom["start"] = tk.Button(self.bottom["frame"], command=self.start, text="Start", font=font)
-        self.bottom["start"].grid(row=0, column=1)
+        self.bottom["frame"].pack(expand=1, fill=tk.BOTH, side=tk.TOP)
+        self.bottom["all_votes_n"] = tk.Label(self.bottom["frame"], font=font, relief=tk.GROOVE)
+        self.bottom["all_votes_n"].pack(expand=1, fill=tk.BOTH, side=tk.LEFT)
+        self.bottom["start"] = tk.Button(self.bottom["frame"], command=self.start, text="Start", font=font, borderwidth=5)
+        self.bottom["start"].pack(expand=1, fill=tk.BOTH, padx=5, pady=5, side=tk.LEFT)
 
     def process_chat(self, chatdata):
         for c in chatdata.items:
@@ -83,7 +83,7 @@ class TopicBox:
 
     def stop(self):
         for i in range(self.box_config["topic_num"]):
-            self.line_dicts[i]["votes_n"].set(self.counter[i])
+            self.choice_dicts[i]["votes_n"].set(self.counter[i])
 
         self.bottom["start"]["text"] = "Start"
         self.bottom["start"]["command"] = self.start
@@ -93,7 +93,7 @@ class TopicBox:
             if(self.box_config["topic_num"] >= len(self.topics)):
                 continue
 
-            if(self.line_dicts[i]["is_check"].get()):
+            if(self.choice_dicts[i]["is_check"].get()):
                 del self.topics[i]
 
         self.reset()
@@ -108,9 +108,9 @@ class TopicBox:
         random.shuffle(self.topics)
 
         for i in range(self.box_config["topic_num"]):
-            self.line_dicts[i]["topic"].set(f"「{self.topics[i]}」")
-            self.line_dicts[i]["votes_n"].set("???")
-            self.line_dicts[i]["is_check"].set(False)
+            self.choice_dicts[i]["topic"].set(f"「{self.topics[i]}」")
+            self.choice_dicts[i]["votes_n"].set("???")
+            self.choice_dicts[i]["is_check"].set(False)
 
         self.bottom["all_votes_n"]["text"] = f"投票数:{self.votes_n}"
 
