@@ -1,0 +1,24 @@
+{
+    "UI_config" : {
+        "title" : "TopicBox",
+        "window_size" : "1280x720",
+        "font" : {
+            "family" : "遊明朝",
+            "size" : 50
+        },
+        "str_max_len" : 20
+    },
+
+    "TopicBoxConfig" : {
+        "video_id" : "Sflq-_arjDg",
+
+        "topic_num" : 4,
+        "initial_topic": [
+            "アリス",
+            "い1111111111111111111111111111111",
+            "う",
+            "え",
+            "お"
+        ]
+    }
+}
