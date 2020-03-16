@@ -3,22 +3,24 @@
         "title" : "TopicBox",
         "window_size" : "1280x720",
         "font" : {
-            "family" : "遊明朝",
-            "size" : 50
+            "family" : "07ラノベPOP",
+            "size" : 45
         },
         "str_max_len" : 20
     },
 
     "TopicBoxConfig" : {
-        "video_id" : "Sflq-_arjDg",
+        "video_id" : "UK2mvNVKmfY",
 
         "topic_num" : 4,
         "initial_topic": [
-            "アリス",
-            "い1111111111111111111111111111111",
-            "う",
-            "え",
-            "お"
+            "自分の名前について",
+            "配信のアーカイブについて",
+            "よく見るVtuber",
+            "最近やったゲーム",
+            "R18ネタについて",
+            "にゃーん",
+            "なんか歌え"
         ]
     }
 }
