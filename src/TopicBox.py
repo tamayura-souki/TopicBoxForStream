@@ -18,7 +18,8 @@ class TopicBox:
         self.votes_n = 0
         self.topics  = self.box_config["initial_topic"]
 
-        self.once_vote = False
+        self.users_add = self.box_config["users_add"]
+        self.vote_lim = self.box_config["vote_lim"]
         self.voted_users = []
 
         self.create_ui()
@@ -112,11 +113,12 @@ class TopicBox:
     def process_chat(self, chatdata):
         for c in chatdata.items:
             chat = c.message
-            if "/add" in chat:
-                self.add_topic(chat.strip("/add").strip())
+            if self.users_add or c.author.isChatOwner:
+                if "/add" in chat:
+                    self.add_topic(chat.strip("/add").strip())
 
             else:
-                if self.once_vote:
+                if self.vote_lim:
                     self.get_avote(chat, c.author.channelId)
                 else:
                     self.get_votes(chat)
@@ -129,12 +131,9 @@ class TopicBox:
         self.bottom.start["command"] = self.start
 
     def start(self):
-        for i in range(self.box_config["topic_num"]):
-            if(self.choice_dicts[i].is_check.get()):
-                if(self.box_config["topic_num"] >= len(self.topics)):
-                    self.topics[i] = "ネタ切れ"
-                else:
-                    self.topics.pop(i)
+        for i in range(self.box_config["topic_num"]-1, -1, -1):
+            if self.choice_dicts[i].is_check.get() and len(self.topics) > i:
+                self.topics.pop(i)
 
         self.reset()
 
@@ -149,7 +148,8 @@ class TopicBox:
         random.shuffle(self.topics)
 
         for i in range(self.box_config["topic_num"]):
-            self.choice_dicts[i].topic.set(f"「{self.topics[i]}」")
+            text = self.topics[i] if len(self.topics) > i else "ネタ切れ"
+            self.choice_dicts[i].topic.set(f"「{text}」")
             self.choice_dicts[i].votes_n.set("???")
             self.choice_dicts[i].is_check.set(False)
 

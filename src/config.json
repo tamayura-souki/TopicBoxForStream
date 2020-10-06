@@ -12,6 +12,9 @@
     "TopicBoxConfig" : {
         "video_id" : "Sflq-_arjDg",
 
+        "users_add" : false,
+        "vote_lim" : false,
+
         "topic_num" : 4,
         "initial_topic": [
             "自分の名前について",
