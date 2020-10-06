@@ -6,7 +6,8 @@ from tkinter import ttk
 
 from pytchat import LiveChat
 
-from utils import *
+import utils
+from utils import TopicElm, Bottom
 
 class TopicBox:
     def __init__(self, config_dict, is_test:bool=False):
@@ -17,7 +18,7 @@ class TopicBox:
         self.votes_n = 0
         self.topics  = self.box_config["initial_topic"]
 
-        self.once_vote = True
+        self.once_vote = False
         self.voted_users = []
 
         self.create_ui()
@@ -37,42 +38,53 @@ class TopicBox:
             self.ui_config["font"]["size"]
         )
 
-        self.choice_dicts = []
+        self.choice_dicts:List[TopicElm] = []
         for i in range(self.box_config["topic_num"]):
-            choice_frame = ttk.Frame(self.root, borderwidth=1, relief=tk.GROOVE)
+            choice_frame = ttk.Frame(self.root, relief=tk.GROOVE)
             choice_frame.pack(ipadx=10, ipady=10, expand=1, side=tk.TOP)
 
-            # named tuple で書き換えかな
-            line_d = {}
-            tk.Label(choice_frame, text=f"No.{i+1}:", font=font)\
-                .pack(expand=1, side=tk.LEFT)
+            line_d = TopicElm(
+                tk.StringVar(), tk.StringVar(), tk.BooleanVar()
+            )
+            tk.Label(
+                choice_frame, text=f"No.{i+1}:", font=font
+            ).pack(expand=1, side=tk.LEFT)
 
-            line_d["topic"] = tk.StringVar()
-            tk.Label(choice_frame, textvariable=line_d["topic"], font=font, width=22)\
-                .pack(expand=1, side=tk.LEFT)
+            tk.Label(
+                choice_frame, textvariable=line_d.topic, font=font, width=22
+            ).pack(expand=1, side=tk.LEFT)
 
-            line_d["votes_n"] = tk.StringVar()
-            tk.Label(choice_frame, textvariable=line_d["votes_n"], font=font, width=5)\
-                .pack(expand=1, side=tk.LEFT)
+            tk.Label(
+                choice_frame, textvariable=line_d.votes_n, font=font, width=5
+            ).pack(expand=1, side=tk.LEFT)
 
-            line_d["is_check"] = tk.BooleanVar()
-            tk.Checkbutton(choice_frame, text="除外", variable=line_d["is_check"], indicatoron=False)\
-                .pack(padx=10, ipadx=10, ipady=10, expand=1, side=tk.LEFT)
+            tk.Checkbutton(
+                choice_frame,
+                text="除外", variable=line_d.is_check, indicatoron=False
+            ).pack(padx=10, ipadx=10, ipady=10, expand=1, side=tk.LEFT)
 
             self.choice_dicts.append(line_d)
 
-        # 1番下の部分
-        # named tuple で書き換えかな
-        self.bottom = {}
-        self.bottom["frame"] = ttk.Frame(self.root)
-        self.bottom["frame"].pack(expand=1, fill=tk.BOTH, side=tk.TOP)
-        self.bottom["all_votes_n"] = tk.Label(self.bottom["frame"], font=font, relief=tk.GROOVE)
-        self.bottom["all_votes_n"].pack(expand=1, fill=tk.BOTH, side=tk.LEFT)
-        self.bottom["start"] = tk.Button(self.bottom["frame"], command=self.start, text="Start", font=font, borderwidth=5)
-        self.bottom["start"].pack(expand=1, fill=tk.BOTH, padx=5, pady=5, side=tk.LEFT)
+        frame = ttk.Frame(self.root)
+        self.bottom = Bottom(
+            frame,
+            tk.Label(frame, font=font, relief=tk.GROOVE),
+            tk.Button(frame, font=font, borderwidth=5)
+        )
+        self.bottom.frame.pack(
+            expand=1, fill=tk.BOTH, side=tk.TOP
+        )
+        self.bottom.all_votes_n.pack(
+            expand=1, fill=tk.BOTH, side=tk.LEFT
+        )
+        self.bottom.start.pack(
+            expand=1, fill=tk.BOTH, padx=5, pady=5, side=tk.LEFT
+        )
+        self.bottom.start["text"] = "Start"
+        self.bottom.start["command"] = self.start
 
     def update_votes_n(self):
-        self.bottom["all_votes_n"]["text"] = f"投票数:{self.votes_n}"
+        self.bottom.all_votes_n["text"] = f"投票数:{self.votes_n}"
 
     def add_topic(self, topic_text:str):
         self.topics.append(topic_text)
@@ -98,8 +110,6 @@ class TopicBox:
         self.update_votes_n()
 
     def process_chat(self, chatdata):
-        # 先に chat list を作れば高階関数でできる?
-        # if else は配列を2つに分割して
         for c in chatdata.items:
             chat = c.message
             if "/add" in chat:
@@ -113,14 +123,14 @@ class TopicBox:
 
     def stop(self):
         for i in range(self.box_config["topic_num"]):
-            self.choice_dicts[i]["votes_n"].set(self.counter[i])
+            self.choice_dicts[i].votes_n.set(self.counter[i])
 
-        self.bottom["start"]["text"] = "Start"
-        self.bottom["start"]["command"] = self.start
+        self.bottom.start["text"] = "Start"
+        self.bottom.start["command"] = self.start
 
     def start(self):
         for i in range(self.box_config["topic_num"]):
-            if(self.choice_dicts[i]["is_check"].get()):
+            if(self.choice_dicts[i].is_check.get()):
                 if(self.box_config["topic_num"] >= len(self.topics)):
                     self.topics[i] = "ネタ切れ"
                 else:
@@ -128,8 +138,8 @@ class TopicBox:
 
         self.reset()
 
-        self.bottom["start"]["text"] = "Stop"
-        self.bottom["start"]["command"] = self.stop
+        self.bottom.start["text"] = "Stop"
+        self.bottom.start["command"] = self.stop
 
     def reset(self):
         self.counter = [0] * self.box_config["topic_num"]
@@ -139,9 +149,9 @@ class TopicBox:
         random.shuffle(self.topics)
 
         for i in range(self.box_config["topic_num"]):
-            self.choice_dicts[i]["topic"].set(f"「{self.topics[i]}」")
-            self.choice_dicts[i]["votes_n"].set("???")
-            self.choice_dicts[i]["is_check"].set(False)
+            self.choice_dicts[i].topic.set(f"「{self.topics[i]}」")
+            self.choice_dicts[i].votes_n.set("???")
+            self.choice_dicts[i].is_check.set(False)
 
         self.update_votes_n()
 
