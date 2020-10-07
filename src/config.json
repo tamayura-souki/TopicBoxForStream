@@ -1,29 +1,23 @@
 {
-    "UI_config" : {
-        "title" : "TopicBox",
-        "window_size" : "1280x720",
-        "font" : {
-            "family" : "07ラノベPOP",
-            "size" : 45
+    "UI_config": {
+        "title": "TopicBox",
+        "window_size": "1280x720",
+        "font": {
+            "family": "07ラノベPOP",
+            "size": 45
         },
-        "str_max_len" : 20
+        "str_max_len": 20
     },
-
-    "TopicBoxConfig" : {
-        "video_id" : "Sflq-_arjDg",
-
-        "users_add" : false,
-        "vote_lim" : false,
-
-        "topic_num" : 4,
+    "TopicBoxConfig": {
+        "video_id": "Sflq-_arjDg",
+        "users_add": false,
+        "vote_lim": true,
+        "topic_save": true,
+        "topic_num": 4,
         "initial_topic": [
-            "自分の名前について",
-            "配信のアーカイブについて",
-            "よく見るVtuber",
             "最近やったゲーム",
-            "R18ネタについて",
             "にゃーん",
-            "なんか歌え"
+            "自分の名前について"
         ]
     }
 }

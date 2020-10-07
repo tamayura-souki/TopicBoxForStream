@@ -1,5 +1,6 @@
 from typing import List, Dict
 
+import json
 import random
 import tkinter as tk
 from tkinter import ttk
@@ -159,3 +160,12 @@ class TopicBox:
         self.root.mainloop()
         if self.livechat is not None:
             self.livechat.terminate()
+
+        if self.box_config["topic_save"]:
+            self.box_config["initial_topic"] = self.topics
+
+        with open("config.json", 'w', encoding='utf-8') as f:
+            config = {}
+            config["UI_config"] = self.ui_config
+            config["TopicBoxConfig"] = self.box_config
+            json.dump(config, f, indent=4, ensure_ascii=False)
