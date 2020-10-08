@@ -1,2 +1,5 @@
 log.txt
 __pycache__
+build
+dist
+run.spec
