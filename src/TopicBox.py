@@ -118,11 +118,10 @@ class TopicBox:
                 if "/add" in chat:
                     self.add_topic(chat.strip("/add").strip())
 
+            if self.vote_lim:
+                self.get_avote(chat, c.author.channelId)
             else:
-                if self.vote_lim:
-                    self.get_avote(chat, c.author.channelId)
-                else:
-                    self.get_votes(chat)
+                self.get_votes(chat)
 
     def stop(self):
         for i in range(self.box_config["topic_num"]):
